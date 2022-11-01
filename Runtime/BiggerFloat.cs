@@ -75,6 +75,7 @@ namespace BigFloatNumerics
             if (log < 8)
             {
                 _m = (float)value;
+                _n = BigInteger.Zero;
                 Arrange();
                 return;
             }
@@ -123,6 +124,7 @@ namespace BigFloatNumerics
         public BiggerFloat(decimal value)
         {
             _m = (float)value;
+            _n = BigInteger.Zero;
             Arrange();
         }
         #endregion
