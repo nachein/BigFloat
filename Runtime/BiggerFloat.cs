@@ -12,8 +12,27 @@ namespace BigFloatNumerics
     public struct BiggerFloat : IComparable, IComparable<BiggerFloat>, IEquatable<BiggerFloat>
     ///number is m × 10^n
     {
-        public float m { get; private set; } // you could set this to `double` and there should be minimal problem. Decimal is better.
-        public BigInteger n { get; private set; }
+        private float _m;
+        private BigInteger _n;
+
+        public float m
+        {
+             get => _m;
+             private set
+             {
+                _m = value;
+             }
+        } // you could set this to `double` and there should be minimal problem. Decimal is better.
+
+        public BigInteger n
+        {
+            get => _n;
+            private set
+            {
+                _n = value;
+            }
+        }
+
         public static readonly BiggerFloat Zero = new BiggerFloat() { m = 0, n = 0 };
         public static readonly BiggerFloat One = new BiggerFloat() { m = 01, n = 0 };
 
@@ -28,12 +47,12 @@ namespace BigFloatNumerics
             float absm = Mathf.Abs(m);
             if (absm < float.Epsilon)
             {
-                n = 0;
+                _n = 0;
                 return this;
             }
             int log = (int)Mathf.Floor(Mathf.Log10(absm));
-            n += log;
-            m /= Mathf.Pow(10, log);
+            _n += log;
+            _m /= Mathf.Pow(10, log);
             return this;
         }
 
@@ -41,13 +60,13 @@ namespace BigFloatNumerics
         public BiggerFloat(string value)
         {
             BiggerFloat bf = Parse(value);
-            this.m = bf.m;
-            this.n = bf.n;
+            _m = bf.m;
+            _n = bf.n;
         }
         public BiggerFloat(float m, BigInteger n)
         {
-            this.m = m;
-            this.n = n;
+            _m = m;
+            _n = n;
             Arrange();
         }
         public BiggerFloat(BigInteger value)
@@ -55,47 +74,47 @@ namespace BigFloatNumerics
             int log = (int)Math.Floor(BigInteger.Log10(BigInteger.Abs(value)));
             if (log < 8)
             {
-                m = (float)value;
+                _m = (float)value;
                 Arrange();
                 return;
             }
-            n = log;
+            _n = log;
             int valueDividedByLog = (int)(value / BigInteger.Pow(10, log - 8));
-            m = valueDividedByLog / 1e8f; // Int.Max =~ 2e9. so divide to int range then divide again to double range.
+            _m = valueDividedByLog / 1e8f; // Int.Max =~ 2e9. so divide to int range then divide again to double range.
         }
         public BiggerFloat(BiggerFloat value)
         {
-            this.m = value.m;
-            this.n = value.n;
+            _m = value.m;
+            _n = value.n;
         }
         public BiggerFloat(ulong value)
         {
-            m = (float)value;
-            n = BigInteger.Zero;
+            _m = (float)value;
+            _n = BigInteger.Zero;
             Arrange();
         }
         public BiggerFloat(long value)
         {
-            m = (float)value;
-            n = BigInteger.Zero;
+            _m = (float)value;
+            _n = BigInteger.Zero;
             Arrange();
         }
         public BiggerFloat(uint value)
         {
-            m = (float)value;
-            n = BigInteger.Zero;
+            _m = (float)value;
+            _n = BigInteger.Zero;
             Arrange();
         }
         public BiggerFloat(int value)
         {
-            m = (float)value;
-            n = BigInteger.Zero;
+            _m = (float)value;
+            _n = BigInteger.Zero;
             Arrange();
         }
         public BiggerFloat(float value)
         {
-            m = (float)value;
-            n = BigInteger.Zero;
+            _m = (float)value;
+            _n = BigInteger.Zero;
             Arrange();
         }
         public BiggerFloat(double value) : this(value.ToString("e9"))// converts to "123e+5678", hence "+5678" can be parsed correctly, is very lazy approach
@@ -103,7 +122,7 @@ namespace BigFloatNumerics
         }
         public BiggerFloat(decimal value)
         {
-            m = (float)value;
+            _m = (float)value;
             Arrange();
         }
         #endregion
